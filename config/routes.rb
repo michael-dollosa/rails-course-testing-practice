@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   #you may check using rails routes --expanded
-  #resources :articles #this gives all routes for articles
+  resources :articles #this gives all routes for articles
   root 'pages#home'
   get 'about', to: 'pages#about'
-  resources :articles, only: [:show, :index, :new, :create, :edit, :update] #this limits the routes 
+  #resources :articles, only: [:show, :index, :new, :create, :edit, :update] #this limits the routes 
   
 end
