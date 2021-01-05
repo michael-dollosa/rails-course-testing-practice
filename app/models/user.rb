@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  #self is referencing to each object in the email class
+  before_save { self.email = email.downcase }
   #adding association
   has_many :articles
   validates :username, presence: true, 
