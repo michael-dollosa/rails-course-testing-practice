@@ -1,5 +1,17 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:edit, :update]
+  before_action :set_user, only: [:edit, :update, :show]
+
+  def show
+    # get the email from URL-parameters or what have you and make lowercase
+    email_address = @user.email.downcase
+    
+    # create the md5 hash
+    hash = Digest::MD5.hexdigest(email_address)
+    
+    # compile URL which can be used in <img src="RIGHT_HERE"...
+    @user_image = "https://www.gravatar.com/avatar/#{hash}?s=200"
+  end
+
   def new
     @user = User.new
   end
