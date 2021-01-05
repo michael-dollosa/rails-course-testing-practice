@@ -22,6 +22,8 @@ class ArticlesController < ApplicationController
     @article = Article.new(article_params)
     #render plain: @article.inspect #to check object created
 
+    #for test - hardcoded user while no user auth function is applied yet
+    @article.user = User.first
     #validation
     if @article.save # to save the object in DB
       #to display message- optional. this will be above "yield" tag on main application erb

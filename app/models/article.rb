@@ -1,4 +1,6 @@
 class Article < ApplicationRecord
+  #association
+  belongs_to :user #singular user without s
   #validating title field
   validates :title, presence: true, :length => { minimum: 6, maximum: 100 } #makes sure that title is present before item is saved with min anx max length
   validates :description, presence: true, length: { minimum: 6, maximum: 300 }
