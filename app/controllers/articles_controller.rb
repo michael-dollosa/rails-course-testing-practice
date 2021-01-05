@@ -10,7 +10,7 @@ class ArticlesController < ApplicationController
   def index
     #index uses GET action to show all articles
     #rails convention
-    @articles = Article.all
+    @articles = Article.paginate(page: params[:page], per_page: 3)
   end
 
   def new
