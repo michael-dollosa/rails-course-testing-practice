@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:edit, :update, :show]
-
+  before_action :set_user, only: [:edit, :update, :show, :destroy]
+  before_action :require_user, except: [:show, :index]
+  before_action :require_same_user, only: [:edit, :update, :destroy]
   def index
     @users = User.paginate(page: params[:page], per_page: 1)
     
@@ -17,7 +18,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       #log in user upon saving
-      session[:user_id] = @user.id
+      session[:user_id] = user.id
       flash[:notice] = "Registered successfully"
       redirect_to articles_path
     else
@@ -37,6 +38,19 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+
+    #delete user
+    @user.destroy
+    #set session id to nil since user is still logged in
+    session[:user_id] = nil
+    #notice
+    flash[:notice] = "Account and all associated articles successfully deleted"
+    #redirect
+    redirect_to root_path
+
+  end
+
   private
   def user_params
     params.require(:user).permit(:username, :email, :password)
@@ -44,6 +58,14 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def require_same_user
+    if current_user != @user
+      flash[:alert] = "You can only edit or delete your own profile"
+      redirect_to users_path
+    end
+    
   end
 
 end

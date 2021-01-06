@@ -2,7 +2,7 @@ class User < ApplicationRecord
   #self is referencing to each object in the email class
   before_save { self.email = email.downcase }
   #adding association
-  has_many :articles
+  has_many :articles, dependent: :destroy #this means that destroy data under articles if dependencies are destroyed
   validates :username, presence: true, 
                       uniqueness: { case_sensitive: false }, 
                       length: {minimum: 3, maximum: 25}

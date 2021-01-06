@@ -1,6 +1,11 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: [:show, :edit, :update, :destroy] #perform this action before anything
 
+  #setting before_action - take note of the order of the methods. before action will execute top-bottom. so the order it is written down is important
+  before_action :set_article, only: [:show, :edit, :update, :destroy] #perform this action before anything
+  #before action for requiring logged in user can only use the controller. require_user is a helper method under ArticlesController
+  before_action :require_user, except: [:show, :index]
+  #set before action for requiring same user to only use the methods
+  before_action :require_same_user, only: [:edit, :update, :destroy]
   def show
     #@article is an instance variable that can be used in show.html.erb under articles
     # params attribute is the same as the params attribute in javascript. getting the :id that is the same as the identifier in DB
@@ -22,8 +27,9 @@ class ArticlesController < ApplicationController
     @article = Article.new(article_params)
     #render plain: @article.inspect #to check object created
 
-    #for test - hardcoded user while no user auth function is applied yet
-    @article.user = User.first
+    #current_user is a method under application_controller
+    #it will give the user object currently logged in
+    @article.user = current_user
     #validation
     if @article.save # to save the object in DB
       #to display message- optional. this will be above "yield" tag on main application erb
@@ -79,4 +85,11 @@ class ArticlesController < ApplicationController
     params.require(:article).permit(:title, :description)
   end
 
+  def require_same_user
+    if current_user != @article.user
+      flash[:alert] = "You can only edit or delete your own article"
+      redirect_to articles_path
+    end
+    
+  end
 end
